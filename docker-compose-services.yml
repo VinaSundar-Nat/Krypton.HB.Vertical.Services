@@ -1,0 +1,25 @@
+version: '3.2'
+
+services:
+    document:
+      container_name: kr_core_doc_api
+      image: kr_core_doc_api:${RUNTIME_VERSION}
+      labels:
+        com.acc.service.description: "KR document api container"
+      restart: always
+      env_file:
+        - ${DOC_ENV}     
+      build:
+        context: .
+        cache_from:
+          - mcr.microsoft.com/dotnet/sdk:8.0-jammy
+          - mcr.microsoft.com/dotnet/aspnet:8.0-jammy-chiseled
+        dockerfile: .docker/.source/document.dockerfile
+      volumes:
+        - 'kr_svcvolume:/krcerts'
+      ports:
+        - "8083:8083"
+        - "7189:7189"
+      networks:
+        kr_network: 
+          ipv4_address: 192.168.10.5

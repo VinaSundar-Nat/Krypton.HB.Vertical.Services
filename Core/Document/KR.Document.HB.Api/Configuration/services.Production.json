@@ -1,0 +1,11 @@
+﻿{
+  "Service": {
+    "Blob": {
+      "BaseUrl": "https://api.onegov.nsw.gov.au",
+      "Version": "v1",
+      "ApiKey": "",
+      "ApiSecret": ""
+    }
+  }
+}
+

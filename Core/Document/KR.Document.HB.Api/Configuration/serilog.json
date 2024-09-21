@@ -1,0 +1,74 @@
+﻿{
+  "Serilog": {
+    "MinimumLevel": {
+      "Default": "Debug",
+      "Override": {
+        "Default": "Information",
+        "Microsoft": "Warning",
+        "Microsoft.Hosting.Lifetime": "Information"
+      }
+    },
+    "WriteTo": [
+      {
+        "Name": "Logger",
+        "Args": {
+          "configureLogger": {
+            "Filter": [
+              {
+                "Name": "ByIncludingOnly",
+                "Args": {
+                  "expression": "(@Level = 'Error' or @Level = 'Fatal' or @Level = 'Warning')"
+                }
+              }
+            ],
+            "WriteTo": [
+              {
+                "Name": "File",
+                "Args": {
+                  "path": "Logs/kr_doc_error_.log",
+                  "outputTemplate": "{Timestamp:o} [{Level:u3}] {NewLine} MetaInfo : Application: {Application}, CorrelationId: {CorrelationId}, System: {System}, User: {User} {NewLine} {Message:lj}{NewLine}{Exception}",
+                  "rollingInterval": "Day",
+                  "retainedFileCountLimit": 10
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "Name": "Logger",
+        "Args": {
+          "configureLogger": {
+            "Filter": [
+              {
+                "Name": "ByIncludingOnly",
+                "Args": {
+                  "expression": "(@Level = 'Information' or @Level = 'Debug')"
+                }
+              }
+            ],
+            "WriteTo": [
+              {
+                "Name": "File",
+                "Args": {
+                  "path": "Logs/kr_doc_info_.log",
+                  "outputTemplate": "{Timestamp:o} [{Level:u3}] {NewLine} MetaInfo : Application: {Application}, CorrelationId: {CorrelationId}, System: {System}, User: {User} {NewLine} {Message:lj}{NewLine}{Exception}",
+                  "rollingInterval": "Day",
+                  "retainedFileCountLimit": 7
+                }
+              }
+            ]
+          }
+        }
+      }
+    ],
+    "Enrich": [
+      "FromLogContext",
+      "WithMachineName"
+    ],
+    "Properties": {
+      "Application": "Core Document"
+    }
+  }
+}
+

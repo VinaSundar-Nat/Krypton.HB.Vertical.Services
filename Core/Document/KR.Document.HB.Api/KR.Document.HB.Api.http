@@ -1,0 +1,6 @@
+@KR.Document.HB.Api_HostAddress = http://localhost:5101
+
+GET {{KR.Document.HB.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

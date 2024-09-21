@@ -1,0 +1,23 @@
+version: '3.2'
+
+networks:
+      kr_network:
+        driver: bridge
+        ipam:
+          driver: default
+          config:
+          -
+            subnet: 192.168.10.0/24
+             
+volumes:
+      kr_svcvolume:
+        labels:
+          - "api.core.description=core api volume"        
+        driver: local
+        driver_opts:
+          type: none
+          device: ${RUNTIME_SERVICE_VOLUME}
+          o: bind
+      kr_datavolume:
+      kr_dbvolume:
+      

@@ -1,0 +1,37 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+            "label": "netbuild:debug",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/Krypton.sln"
+            ],
+            "problemMatcher": "$msCompile",
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			  },
+			  "detail": "Build the .NET solution in Debug mode"
+        },
+        {
+            "label": "netbuild:release",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/Krypton.sln",
+                "-c",
+                "Release"
+            ],
+            "problemMatcher": "$msCompile",
+			"group": {
+				"kind": "build",
+				"isDefault": false
+			  },
+			  "detail": "Build the .NET solution in Release mode"
+        }
+	]
+}
