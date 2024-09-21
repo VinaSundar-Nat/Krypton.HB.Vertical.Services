@@ -11,12 +11,12 @@ using Newtonsoft.Json.Linq;
 
 namespace KR.Infrastructure.Http.Exceptions;
 
-public interface IExceptionHandler
+public interface IGlobalExceptionHandler
 {
     void Handle(ExceptionContext context);
 }
 
-internal sealed class ValidationExceptionHandler: IExceptionHandler
+internal sealed class ValidationExceptionHandler: IGlobalExceptionHandler
 {
     public  void Handle(ExceptionContext context)
     {
@@ -38,7 +38,7 @@ internal sealed class ValidationExceptionHandler: IExceptionHandler
     }
 }
 
-internal sealed class InternalServerExceptionHandler : IExceptionHandler
+internal sealed class InternalServerExceptionHandler : IGlobalExceptionHandler
 {
     public void Handle(ExceptionContext context)
     {
@@ -55,7 +55,7 @@ internal sealed class InternalServerExceptionHandler : IExceptionHandler
     }
 }
 
-internal sealed class UnauthorizedExceptionHandler : IExceptionHandler
+internal sealed class UnauthorizedExceptionHandler : IGlobalExceptionHandler
 {
     public void Handle(ExceptionContext context)
     {
@@ -77,7 +77,7 @@ public static class ExceptionFactory
     private const string exNamespace = "Account.Infrastructure.Http.Exceptions";
     public static void OnException(ExceptionContext context, ILogger logger)
     {
-        IExceptionHandler? handler = null;
+        IGlobalExceptionHandler? handler = null;
         try
         {
             var exceptionType = context.Exception.GetType();
@@ -88,7 +88,7 @@ public static class ExceptionFactory
             Type handlerType = Type.GetType($"{exNamespace}.{attribute.nameof}Handler")
                                     .Gaurd("Implementor type not defined.");
 
-            handler = (IExceptionHandler) Activator.CreateInstance(handlerType)
+            handler = (IGlobalExceptionHandler) Activator.CreateInstance(handlerType)
                                             .Gaurd("Handle invocation error.") ;
 
             handler.Handle(context);

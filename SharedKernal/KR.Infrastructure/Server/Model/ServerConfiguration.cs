@@ -6,12 +6,13 @@ public abstract class ServerConfiguration
     public const string HostingOptions = "HostingOptions";
 }
 
-public sealed class KerstalConfiguration: ServerConfiguration
+public sealed class KerstalConfiguration : ServerConfiguration
 {
-    
+
     public bool UseKerstal { get; set; }
-	public string CertPath { get; set; }
+    public string CertPath { get; set; }
     public string CertPassword { get; set; }
+    public int Port { get; set; }
 }
 
 

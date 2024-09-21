@@ -1,6 +1,0 @@
-@KR.Experience.HB.Api_HostAddress = http://localhost:5100
-
-GET {{KR.Experience.HB.Api_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

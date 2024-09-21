@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi"/>
+    <PackageReference Include="Swashbuckle.AspNetCore" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\KR.Document.HB.Domain\KR.Document.HB.Domain.csproj" />
+    <ProjectReference Include="..\..\..\SharedKernal\KR.Infrastructure\KR.Infrastructure.csproj" />
+    <ProjectReference Include="..\KR.Document.HB.Application\KR.Document.HB.Application.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Configuration/" />
+  </ItemGroup>
+
+</Project>
