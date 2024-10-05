@@ -12,7 +12,7 @@ public static class AppBuilder
     {
         builder.Services.AddHttpContextAccessor();
         Configuration(builder);
-        Host(builder);
+        Host(builder);   
         builder.RegisterLogger();
     }
 
@@ -61,14 +61,14 @@ public static class AppBuilder
                 listenOptions.Protocols = HttpProtocols.Http2;
             });
 
-            options.Listen(IPAddress.Any, 8083, listenOptions =>
+            options.Listen(IPAddress.Any, 8085, listenOptions =>
             {
                 listenOptions.Protocols = HttpProtocols.Http1;
             });
 
-            //Max body size - 14.4 Mb
-            options.Limits.MaxRequestBodySize = 1800000;
-
+           
+            options.Limits.MaxRequestBodySize = 9703180;
+           
             options.Configure();
         });
     }

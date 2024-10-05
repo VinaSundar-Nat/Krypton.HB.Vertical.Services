@@ -10,10 +10,20 @@ public static class ServiceExtensions
         RegisterExceptions(services);
         
         services.AddScoped<IFileOperation,FileOperation>();
+        RegisterPolocies(services);
     }
 
-    private static void RegisterExceptions(IServiceCollection services){
-        services.AddSingleton<ILoggerFactory, LoggerFactory>();
+    public static void RegisterPolocies(IServiceCollection services){
+        services.AddCors(options =>
+        {
+            options.AddPolicy("AllowAll",
+                builder => builder.AllowAnyOrigin()
+                                .AllowAnyMethod()
+                                .AllowAnyHeader());
+        });
+    }
+
+    private static void RegisterExceptions(IServiceCollection services){       
         services.AddExceptionHandler<BadRequestExceptionHandler>();
         services.AddExceptionHandler<GlobalExceptionHandler>();
     }

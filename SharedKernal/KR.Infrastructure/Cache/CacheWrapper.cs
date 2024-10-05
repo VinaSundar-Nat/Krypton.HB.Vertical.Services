@@ -1,8 +1,8 @@
 ﻿using System.Collections.ObjectModel;
+using System.Text.Json;
 using KR.Common.Exceptions;
 using KR.Infrastructure.Cache.Interface;
 using KR.Security;
-using Newtonsoft.Json;
 
 namespace KR.Infrastructure.Cache
 {
@@ -66,13 +66,13 @@ namespace KR.Infrastructure.Cache
         public async Task<T?> GetAsync<T>(string key)
         {
             var data = await _redisStore.GetCacheAsString(key).ConfigureAwait(false);
-            return data.HasValue ? JsonConvert.DeserializeObject<T>(data) : default;
+            return data.HasValue ?  JsonSerializer.Deserialize<T>(data! ) : default;
         }
 
         public async Task<ICollection<T>?> GetCollectionAsync<T>(string key)
         {
             var data = await _redisStore.GetCacheAsString(key).ConfigureAwait(false);
-            return data.HasValue ? JsonConvert.DeserializeObject<ICollection<T>>(data) : default;
+            return data.HasValue ? JsonSerializer.Deserialize<ICollection<T>>(data! ) : default;
         }
     }
 }

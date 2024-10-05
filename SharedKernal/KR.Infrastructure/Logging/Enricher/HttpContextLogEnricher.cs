@@ -40,15 +40,15 @@ namespace KR.Infrastructure.Logging.Enricher
     internal sealed class HttpContextProperties
     {
 
-        internal readonly string System;
-        internal readonly string User;
-        internal readonly string CorrelationId;
+        internal readonly string? System;
+        internal readonly string? User;
+        internal readonly string? CorrelationId;
 
         internal HttpContextProperties(IHttpContextAccessor contextAccessor)
         {
             CorrelationId = contextAccessor?.HttpContext?.Request?.Headers["X-Correlation-ID"];
-            User = contextAccessor.HttpContext?.Request?.Headers["X-User"];
-            System = contextAccessor.HttpContext?.Request?.Headers["X-System"];
+            User = contextAccessor?.HttpContext?.Request?.Headers["X-User"];
+            System = contextAccessor?.HttpContext?.Request?.Headers["X-System"];
         }     
     }
 }

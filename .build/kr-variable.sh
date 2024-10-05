@@ -11,14 +11,7 @@ compose='true'
 certtrust='true'
 destroy='false'
 prune='false'
-
-# printRenderedComposeFile='false'
-# build='false'
-# buildArg='local'
-# compose='false'
-# certtrust='false'
-# destroy='true'
-# prune='true'
+includeComp='false'
 
 # SSL requirements
 doc_api_name='kr_core_doc_api'

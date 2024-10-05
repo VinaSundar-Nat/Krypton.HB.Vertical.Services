@@ -6,6 +6,7 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 <ItemGroup>
+    <PackageReference Include="Azure.Core" />
     <PackageReference Include="Polly" />
     <PackageReference Include="Microsoft.Extensions.Http.Polly" />
     <PackageReference Include="Serilog.AspNetCore" />

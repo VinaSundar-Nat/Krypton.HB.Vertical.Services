@@ -1,10 +1,10 @@
-﻿using KR.Common.Exceptions;
+﻿using System.Text.Json;
+using KR.Common.Exceptions;
 using KR.Infrastructure.Cache.Interface;
 using KR.Infrastructure.Resiliency;
 using KR.Infrastructure.ResiliencyWrapper;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
 using Serilog.Core;
 using StackExchange.Redis;
 
@@ -76,8 +76,8 @@ internal sealed class RedisStore : IRedisStore
 
         if (expiry < DateTime.UtcNow)
             throw new CacheException($"Cannot create Cache for key {key}.Cache expiry invalid .Please try again later");
-
-        if (!await Database().StringSetAsync(key, JsonConvert.SerializeObject(data)).ConfigureAwait(false) )
+ 
+        if (!await Database().StringSetAsync(key, JsonSerializer.Serialize(data)).ConfigureAwait(false) )
             throw new CacheException($"Cannot create Cache for key {key}");
 
         Database().KeyExpire(key, expiry);
