@@ -1,12 +1,11 @@
 ﻿using KR.Infrastructure.Http.Exceptions;
 using KR.Common.Extensions;
 using System.Net;
-using FluentValidation.Results;
 using System.Net.Http.Headers;
-using Newtonsoft.Json;
 using System.Text;
 using KR.Common.Gaurd;
 using System.ComponentModel;
+using System.Text.Json.Serialization;
 
 namespace KR.Infrastructure.Http;
 
@@ -25,9 +24,9 @@ public abstract partial class HttpBase<ErrorHandler>
 
         foreach (var property in type.GetProperties())
         {
-            JsonPropertyAttribute? attribute = (JsonPropertyAttribute)Attribute.GetCustomAttribute(property, typeof(JsonPropertyAttribute))
+            JsonPropertyNameAttribute? attribute = (JsonPropertyNameAttribute)Attribute.GetCustomAttribute(property, typeof(JsonPropertyNameAttribute))
                                                 .Gaurd("Implementor type not defined.");
-            urlBuilder.Append($"{attribute.PropertyName}={property.GetValue(model)}&");
+            urlBuilder.Append($"{attribute.Name}={property.GetValue(model)}&");
         }
 
         string url = urlBuilder.ToString();

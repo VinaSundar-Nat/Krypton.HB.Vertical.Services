@@ -1,10 +1,13 @@
 ﻿{
-  "Service": {
+  "Cloud": {
     "Blob": {
-      "BaseUrl": "https://api.onegov.nsw.gov.au",
+      "BaseUrl": "https://krcoredevaccount.blob.core.windows.net/",
       "Version": "v1",
-      "ApiKey": "",
-      "ApiSecret": ""
+      "ManagedIdentityId": "eeb15e6c-11c6-4472-abbc-60223210a52c",
+      "Container": "krcoredocdevcontainer",
+      "ExcludeEnvironmentCredential": true, 
+      "ExcludeManagedIdentityCredential": true,  
+      "ExcludeAzureCliCredential" : true 
     }
   }
 }

@@ -2,10 +2,10 @@
 
 namespace KR.Document.HB.Application;
 
-public class FileOperation : IFileOperation
+public class FileOperation(IBlobService BlobService) : IFileOperation
 {
-    public Task<UploadResponse> Upload(FileModel file, CancellationToken token)
+    public async Task<UploadResponse> Upload(FileModel file, CancellationToken token = default)
     {
-        throw new NotImplementedException();
+       return await BlobService.UploadDataAsync(file,token);    
     }
 }

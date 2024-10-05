@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi"/>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
     <PackageReference Include="Swashbuckle.AspNetCore" />
   </ItemGroup>
 
@@ -15,10 +15,12 @@
     <ProjectReference Include="..\KR.Document.HB.Domain\KR.Document.HB.Domain.csproj" />
     <ProjectReference Include="..\..\..\SharedKernal\KR.Infrastructure\KR.Infrastructure.csproj" />
     <ProjectReference Include="..\KR.Document.HB.Application\KR.Document.HB.Application.csproj" />
+    <ProjectReference Include="..\KR.Document.HB.Adapter\KR.Document.HB.Adapter.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Configuration/" />
+    <Folder Include="Logs/" />
   </ItemGroup>
 
 </Project>

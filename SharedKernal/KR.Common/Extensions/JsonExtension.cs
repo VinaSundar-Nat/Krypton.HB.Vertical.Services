@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Text;
 using System.Text.Json;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using Newtonsoft.Json.Linq;
-using Newtonsoft.Json.Serialization;
+
+
 
 namespace KR.Common.Extensions;
 
@@ -15,19 +13,13 @@ public static class JsonExtension
 
     private static int bufferSize { get; } = 1024;
 
-    private static DefaultContractResolver contractResolver => new DefaultContractResolver
-    {
-        NamingStrategy = new CamelCaseNamingStrategy()
-    };
-
     public static void SerializeToJsonStream<T>(this Stream stream, T request,
                 bool leaveOpen = true, bool reset = true) =>
-                SerializeToJsonStream<T>(stream, request, new UTF8Encoding(), bufferSize, leaveOpen, reset);
+                SerializeToJsonStream<T>(stream, request, bufferSize, leaveOpen, reset);
 
     public static void SerializeToJsonStream<T>(
        this Stream stream,
        T request,
-       Encoding encoding,
        int bufferSize,
        bool leaveOpen,
        bool reset)
@@ -38,90 +30,76 @@ public static class JsonExtension
         if (!stream.CanWrite)
             throw new NotSupportedException(StreamCreateError);
 
-        if (encoding == null)
-            throw new ArgumentNullException(nameof(encoding));
-
-        using (var streamWriter = new StreamWriter(stream, encoding, bufferSize, leaveOpen))
+        using (var bufferedStream = new BufferedStream(stream, bufferSize))
+        using (var utf8JsonWriter = new Utf8JsonWriter(bufferedStream, new JsonWriterOptions { Indented = true }))
         {
-            using (var jsonTextWriter = new JsonTextWriter(streamWriter))
-            {
-                var jsonSerializer = new Newtonsoft.Json.JsonSerializer();
-                jsonSerializer.Serialize(jsonTextWriter, request);
-                jsonTextWriter.Flush();
-            }
+            JsonSerializer.Serialize(utf8JsonWriter, request);
+            utf8JsonWriter.Flush();
         }
 
         if (reset && stream.CanSeek)
         {
             stream.Seek(0, SeekOrigin.Begin);
         }
+
+        if (!leaveOpen)
+        {
+            stream.Close();
+        }
     }
 
     public static T? ReadAndDeserializeFromJson<T>(this Stream stream) =>
-          ReadAndDeserializeFromJson<T>(stream, new UTF8Encoding(), true, bufferSize, false,
-              new Newtonsoft.Json.JsonSerializer());
-
-    public static T? ReadAndDeserializeFromJson<T>(this Stream stream, Newtonsoft.Json.JsonSerializer jsonSerializer) =>
-          ReadAndDeserializeFromJson<T>(stream, new UTF8Encoding(), true, bufferSize, false, jsonSerializer);
+          ReadAndDeserializeFromJson<T>(stream, true, bufferSize, false);
 
     public static T? ReadAndDeserializeFromJson<T>(
         this Stream stream,
-        Encoding encoding,
         bool detectEncodingFactor,
         int bufferSize,
-        bool leaveOpen,
-        Newtonsoft.Json.JsonSerializer jsonSerializer)
+        bool leaveOpen)
     {
-        if (stream == null)
-            throw new ArgumentNullException(nameof(stream));
-
-        if (!stream.CanRead)
-            throw new NotSupportedException(StreamReadError);
-
-        if (encoding == null)
-            throw new ArgumentNullException(nameof(encoding));
-
-        using (var streamReader = new StreamReader(stream, encoding,
-            detectEncodingFactor, bufferSize, leaveOpen))
+        try
         {
-            using (var jsonTextReader = new JsonTextReader(streamReader))
-            {              
-                return jsonSerializer.Deserialize<T>(jsonTextReader);
+            if (stream == null)
+                throw new ArgumentNullException(nameof(stream));
+
+            if (!stream.CanRead)
+                throw new NotSupportedException(StreamReadError);
+
+            using var bufferStream = new BufferedStream(stream, bufferSize);
+            using var memoryStream = new MemoryStream();
+            bufferStream.CopyTo(memoryStream);
+            var reader = new Utf8JsonReader(memoryStream.ToArray());
+            return JsonSerializer.Deserialize<T>(ref reader);
+        }
+        finally
+        {
+            if (!leaveOpen)
+            {
+                stream.Dispose();
             }
         }
     }
 
-    public static string ToJson(this object model, bool camelCase = true, Formatting formatting = Formatting.Indented)
+    public static string ToJson(this object model, bool camelCase = true, bool formatting = true)
     {
-        var serializerSettings = new JsonSerializerSettings
+        var options = new JsonSerializerOptions
         {
-            Formatting = formatting,
-            ContractResolver = camelCase ? contractResolver : default
+            WriteIndented = formatting, 
+            PropertyNamingPolicy = camelCase ? JsonNamingPolicy.CamelCase : default 
         };
 
-        return JsonConvert.SerializeObject(model, serializerSettings);
+        return JsonSerializer.Serialize(model, options);
     }
 
-    public static T? ToModel<T>(this string source, bool camelCase = true, Formatting formatting = Formatting.None)
+    public static T? ToModel<T>(this string source, bool camelCase = true, bool formatting = true)
     {
-        var serializerSettings = new JsonSerializerSettings
+        var options = new JsonSerializerOptions
         {
-            Formatting = formatting,
-            ContractResolver = camelCase ? contractResolver : default
+            WriteIndented = formatting, 
+            PropertyNamingPolicy = camelCase ? JsonNamingPolicy.CamelCase : default 
         };
 
-        return JsonConvert.DeserializeObject<T>(source, serializerSettings);
-    }
-
-    public static T? GetValue<T>(this string source, string path) where T : IComparable
-    {
-        var jObject = JObject.Parse(source);
-        var token = jObject.SelectToken(path);
-
-        if (token == null)
-            return default(T);
-
-        return (T)Convert.ChangeType(token, typeof(T));
+        return JsonSerializer.Deserialize<T>(source, options);
     }
 }
 
