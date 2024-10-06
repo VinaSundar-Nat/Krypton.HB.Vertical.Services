@@ -5,7 +5,7 @@
       "Version": "v1",
       "ManagedIdentityId": "eeb15e6c-11c6-4472-abbc-60223210a52c",
       "Container": "krcoredocdevcontainer",
-      "ExcludeEnvironmentCredential": true, 
+      "ExcludeEnvironmentCredential": false, 
       "ExcludeManagedIdentityCredential": true,  
       "ExcludeAzureCliCredential" : true 
     }
