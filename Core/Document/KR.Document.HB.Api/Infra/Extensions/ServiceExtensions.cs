@@ -6,11 +6,10 @@ namespace KR.Document.HB.Api;
 
 public static class ServiceExtensions
 {
-    public static void Register(this IServiceCollection services, IConfiguration configuration ){
+    public static void Register(this IServiceCollection services, IConfiguration configuration ){       
         RegisterExceptions(services);
-        
         services.AddScoped<IFileOperation,FileOperation>();
-        RegisterPolocies(services);
+        RegisterPolocies(services);      
     }
 
     public static void RegisterPolocies(IServiceCollection services){
@@ -23,7 +22,8 @@ public static class ServiceExtensions
         });
     }
 
-    private static void RegisterExceptions(IServiceCollection services){       
+    private static void RegisterExceptions(IServiceCollection services){ 
+        services.AddProblemDetails();      
         services.AddExceptionHandler<BadRequestExceptionHandler>();
         services.AddExceptionHandler<GlobalExceptionHandler>();
     }

@@ -27,13 +27,16 @@ public static class Startup
                 ExcludeEnvironmentCredential = blobConfig.ExcludeEnvironmentCredential,  // Don't exclude Environment Credential
                 ExcludeManagedIdentityCredential = blobConfig.ExcludeManagedIdentityCredential,  // Use Managed Identity if available
                 ExcludeAzureCliCredential = blobConfig.ExcludeAzureCliCredential,  // Use Azure CLI credentials if available
-                ExcludeSharedTokenCacheCredential = true,  // Exclude Shared Token Cache
-                ExcludeInteractiveBrowserCredential = true,
-                ExcludeVisualStudioCredential = true,
+                ExcludeSharedTokenCacheCredential = !isDevelopment,  // Exclude Shared Token Cache
+                ExcludeInteractiveBrowserCredential = !isDevelopment,
+                ExcludeVisualStudioCredential = !isDevelopment,
+                ExcludeVisualStudioCodeCredential = !isDevelopment,
                 AuthorityHost = AzureAuthorityHosts.AzurePublicCloud,
-                ManagedIdentityClientId = blobConfig.ManagedIdentityId,
                 Diagnostics = {IsLoggingContentEnabled = isDevelopment}
             };
+
+            if(!isDevelopment)
+                options.ManagedIdentityClientId  = blobConfig.ManagedIdentityId;
 
             clientBuilder.UseCredential(new DefaultAzureCredential(options));
         });
