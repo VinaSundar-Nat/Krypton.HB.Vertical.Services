@@ -36,7 +36,7 @@ public class BlobService(ILogger<BlobService> Logger,
             }
         };
 
-        await CloudResiliencyWrapper.GetRetryPolicy<BlobService>(Logger)
+        await CloudResiliencyWrapper.GetRetryPolicy<BlobService>(Logger, maxRetry:1)
         .ExecuteAsync(async () =>
         {
             Logger.LogBlobUploadStart(fileModel.FileName!, Configuration.Container!);
