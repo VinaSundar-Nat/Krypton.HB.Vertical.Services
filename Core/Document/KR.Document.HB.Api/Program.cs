@@ -2,6 +2,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using KR.Document.HB.Adapter;
 using KR.Document.HB.Api;
+using KR.Infrastructure.Server;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -28,7 +29,7 @@ AddJsonOptions((options) => {
 
 
 builder.Services.Register(builder.Configuration);
-builder.Services.RegisterAdapters(builder.Configuration, builder.Environment.IsDev());
+builder.Services.RegisterAdapters(builder.Configuration, builder.Environment);
 
 
 var app = builder.Build();
