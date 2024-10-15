@@ -41,15 +41,18 @@ internal sealed class RedisStore : IRedisStore
        
         var policy = CacheResiliencyWrapper.GetRetryPolicy(_logger);
 
-        ConnectionMultiplexer plex = null;
+        ConnectionMultiplexer? plex = null;
 
         policy.Execute(() =>
         {
              plex = ConnectionMultiplexer.Connect(configuration);
 
             if (!plex.IsConnected)
-                throw new CacheConnectionException("Redis cache connection failure.");
+                throw new CacheConnectionException(CacheConstants.CacheConnectionError);
         });
+
+        if(!plex?.IsConnected ?? false)
+            throw new ApplicationException(CacheConstants.CacheConnectionError);
 
 
         return plex;

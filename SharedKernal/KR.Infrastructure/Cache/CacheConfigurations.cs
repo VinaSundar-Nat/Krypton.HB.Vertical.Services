@@ -7,10 +7,14 @@ namespace KR.Infrastructure.Cache;
 
 public sealed class CacheConfigurations
 {
-	public string ConnectionString { get; set; }
-	public string InstanceName { get; set; }
-
+    public required string Host { get; set; }
+    public required string Password { get; set; }
+    public bool Ssl { get; set; }
+    public int Timeout { get; set; }
+    public int ResolvedDns { get; set; }
+    public required string InstanceName { get; set; }
     public bool Active { get; set; } = true;
+	public string ConnectionString => $"{Host},resolvedns={ResolvedDns},password={Password},ssl={Ssl},connectTimeout={Timeout}"; 
     public bool IsValid => !string.IsNullOrEmpty(ConnectionString);
 }
 

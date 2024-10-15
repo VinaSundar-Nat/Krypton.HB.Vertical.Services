@@ -1,6 +1,7 @@
 ﻿using KR.Document.HB.Application;
 using KR.Document.HB.Domain;
 using KR.Infrastructure;
+using KR.Infrastructure.Cache;
 
 namespace KR.Document.HB.Api;
 
@@ -9,7 +10,8 @@ public static class ServiceExtensions
     public static void Register(this IServiceCollection services, IConfiguration configuration ){       
         RegisterExceptions(services);
         services.AddScoped<IFileOperation,FileOperation>();
-        RegisterPolocies(services);      
+        RegisterPolocies(services);
+        // services.RegisterCache(configuration);      
     }
 
     public static void RegisterPolocies(IServiceCollection services){

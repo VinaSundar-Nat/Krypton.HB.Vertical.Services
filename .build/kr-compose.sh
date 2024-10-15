@@ -24,7 +24,7 @@ function remove_deps() {
 
 remove_file
 
-if [$prune == "true"]; then
+if [ $prune == "true" ]; then
     docker builder prune -f
 fi
 
@@ -50,10 +50,10 @@ else
    exit 1
 fi
 
-COMPOSE_FILES="-f ../docker-compose-utility.yml -f ../docker-compose-services.yml"
+COMPOSE_FILES="-f ../docker-compose-utility.yml -f ../docker-compose-components.yml -f ../docker-compose-services.yml"
 
-if [$includeComp == 'true'] ; then
-    COMPOSE_FILES="$COMPOSE_FILES -f ../docker-compose-components.yml"
+if [ $includeComp == 'true' ] ; then
+    COMPOSE_FILES="$COMPOSE_FILES -f ../docker-compose-eventing.yml"
 fi
 
 if [ $printRenderedComposeFile == 'true' ]  ; then

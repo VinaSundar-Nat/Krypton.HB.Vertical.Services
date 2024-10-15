@@ -3,15 +3,18 @@
 using Azure.Core;
 using Azure.Identity;
 using KR.Document.HB.Domain;
+using KR.Infrastructure.Server;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace KR.Document.HB.Adapter;
 
 public static class Startup
 {
-    public static void RegisterAdapters(this IServiceCollection services, IConfiguration configuration, bool isDevelopment)
+    public static void RegisterAdapters(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment env)
     {
         services.AddAzureClients(clientBuilder =>
         {
@@ -27,15 +30,15 @@ public static class Startup
                 ExcludeEnvironmentCredential = blobConfig.ExcludeEnvironmentCredential,  // Don't exclude Environment Credential
                 ExcludeManagedIdentityCredential = blobConfig.ExcludeManagedIdentityCredential,  // Use Managed Identity if available
                 ExcludeAzureCliCredential = blobConfig.ExcludeAzureCliCredential,  // Use Azure CLI credentials if available
-                ExcludeSharedTokenCacheCredential = !isDevelopment,  // Exclude Shared Token Cache
-                ExcludeInteractiveBrowserCredential = !isDevelopment,
-                ExcludeVisualStudioCredential = !isDevelopment,
-                ExcludeVisualStudioCodeCredential = !isDevelopment,
+                ExcludeSharedTokenCacheCredential = !env.IsDevelopment(),  // Exclude Shared Token Cache
+                ExcludeInteractiveBrowserCredential = true,
+                ExcludeVisualStudioCredential = true,
+                ExcludeVisualStudioCodeCredential = !env.IsDevelopment(),
                 AuthorityHost = AzureAuthorityHosts.AzurePublicCloud,
-                Diagnostics = {IsLoggingContentEnabled = isDevelopment}
+                Diagnostics = {IsLoggingContentEnabled = env.IsDev()}
             };
 
-            if(!isDevelopment)
+            if(!env.IsDev())
                 options.ManagedIdentityClientId  = blobConfig.ManagedIdentityId;
 
             clientBuilder.UseCredential(new DefaultAzureCredential(options));
@@ -52,6 +55,8 @@ public static class Startup
 
     private static void RegisterServices(IServiceCollection services)
     {
-        services.AddSingleton<IBlobService, BlobService>();
+        services.AddSingleton<IBlobUploadService, BlobUploadService>();
+        services.AddSingleton<IBlobDownloadService, BlobDownloadService>();
+        
     }
 }

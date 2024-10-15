@@ -1,0 +1,10 @@
+﻿{
+  "Cache": {
+    "Host": "localhost:6379",
+    "Password": "$uper0delta.",
+    "Ssl": "False",
+    "Timeout": "500",
+    "ResolvedDns": "1",
+    "InstanceName": "krcache"
+  }
+}

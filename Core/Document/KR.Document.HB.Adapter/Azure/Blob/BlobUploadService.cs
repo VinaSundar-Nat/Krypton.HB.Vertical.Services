@@ -1,16 +1,19 @@
 ﻿using Azure.Storage;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
+using Azure.Storage.Blobs.Specialized;
+using Azure.Storage.Sas;
 using KR.Common.Extensions;
 using KR.Document.HB.Domain;
 using KR.Infrastructure;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
+
 namespace KR.Document.HB.Adapter;
 
-public class BlobService(ILogger<BlobService> Logger,
-     BlobServiceClient BlobServiceClient, IOptions<BlobConfiguration> options) : IBlobService
+public class BlobUploadService(ILogger<BlobUploadService> Logger,
+     BlobServiceClient BlobServiceClient, IOptions<BlobConfiguration> options) : IBlobUploadService
 {
     private BlobConfiguration Configuration => options.Value;
     public async Task<UploadResponse> UploadDataAsync(FileModel fileModel, CancellationToken token)
@@ -24,7 +27,8 @@ public class BlobService(ILogger<BlobService> Logger,
             {
                 { "provider", Constants.ServiceName },
                 { "created", BlobHelpers.UtcStamp() },
-                { "tag", Constants.Version }
+                { "tag", Constants.Version },
+                { "user", fileModel.User!}
             };
 
         var blobOpts = new BlobUploadOptions
@@ -36,7 +40,7 @@ public class BlobService(ILogger<BlobService> Logger,
             }
         };
 
-        await CloudResiliencyWrapper.GetRetryPolicy<BlobService>(Logger, maxRetry:1)
+        await CloudResiliencyWrapper.GetRetryPolicy(Logger, maxRetry: 1)
         .ExecuteAsync(async () =>
         {
             Logger.LogBlobUploadStart(fileModel.FileName!, Configuration.Container!);
@@ -51,6 +55,7 @@ public class BlobService(ILogger<BlobService> Logger,
             FileName = fileModel.FileName,
             Url = BlobHelpers.ConstructBlobUrl(Configuration.BaseUrl!, Configuration.Container!, fileModel.FileName!),
         };
-
     }
+
+    
 }
