@@ -9,7 +9,7 @@ public static class CloudResiliencyWrapper
 {
     private static readonly Action<ILogger, string, Exception>
     _exceptionCaughtOnErrorRetry = LoggerMessage.Define<string>(
-            LogLevel.Critical,
+            LogLevel.Warning,
             100,
             "Unhandled exception retrying component: {Message}");
 
@@ -21,6 +21,6 @@ public static class CloudResiliencyWrapper
                 sleepDurationProvider: attempt => TimeSpan.FromSeconds(Math.Pow(sleepFor, attempt)), // Exponential backoff
                 onRetry: (exception, timeSpan, retryCount, context) =>
                 {
-                    _exceptionCaughtOnErrorRetry(logger, $"Retry due to process exception.Retrying {retryCount}. Waiting {timeSpan.TotalSeconds} seconds", exception);
+                    _exceptionCaughtOnErrorRetry(logger, $"Retry due to process exception .Retrying {retryCount}. Waiting {timeSpan.TotalSeconds} seconds", exception);
                 });
 }

@@ -9,6 +9,7 @@ using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace KR.Document.HB.Adapter;
 
@@ -30,16 +31,16 @@ public static class Startup
                 ExcludeEnvironmentCredential = blobConfig.ExcludeEnvironmentCredential,  // Don't exclude Environment Credential
                 ExcludeManagedIdentityCredential = blobConfig.ExcludeManagedIdentityCredential,  // Use Managed Identity if available
                 ExcludeAzureCliCredential = blobConfig.ExcludeAzureCliCredential,  // Use Azure CLI credentials if available
-                ExcludeSharedTokenCacheCredential = !env.IsDevelopment(),  // Exclude Shared Token Cache
+                ExcludeSharedTokenCacheCredential = !env.IsDev(),  // Exclude Shared Token Cache
                 ExcludeInteractiveBrowserCredential = true,
                 ExcludeVisualStudioCredential = true,
                 ExcludeVisualStudioCodeCredential = !env.IsDevelopment(),
                 AuthorityHost = AzureAuthorityHosts.AzurePublicCloud,
-                Diagnostics = {IsLoggingContentEnabled = env.IsDev()}
+                Diagnostics = { IsLoggingContentEnabled = env.IsDev() }
             };
 
-            if(!env.IsDev())
-                options.ManagedIdentityClientId  = blobConfig.ManagedIdentityId;
+            if (!env.IsDev())
+                options.ManagedIdentityClientId = blobConfig.ManagedIdentityId;
 
             clientBuilder.UseCredential(new DefaultAzureCredential(options));
         });
@@ -57,6 +58,6 @@ public static class Startup
     {
         services.AddSingleton<IBlobUploadService, BlobUploadService>();
         services.AddSingleton<IBlobDownloadService, BlobDownloadService>();
-        
+
     }
 }

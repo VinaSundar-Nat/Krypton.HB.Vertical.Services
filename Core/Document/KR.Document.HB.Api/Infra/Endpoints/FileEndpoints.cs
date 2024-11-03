@@ -57,7 +57,7 @@ public static partial class ApiEndpoints
             "File opertaions",
             "File opertaions to support enterprise operations."
         ))
-        .Produces<UploadResponse>(StatusCodes.Status200OK)
+        .Produces<object>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status500InternalServerError)
         .Produces(StatusCodes.Status404NotFound);
 
