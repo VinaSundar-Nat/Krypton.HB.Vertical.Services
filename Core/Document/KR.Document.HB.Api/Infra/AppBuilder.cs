@@ -66,9 +66,7 @@ public static class AppBuilder
                 listenOptions.Protocols = HttpProtocols.Http1;
             });
 
-           
-            options.Limits.MaxRequestBodySize = 9703180;
-           
+            options.Limits.MaxRequestBodySize = 9703180;           
             options.Configure();
         });
     }

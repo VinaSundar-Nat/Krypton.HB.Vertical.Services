@@ -2,6 +2,7 @@
 using KR.Document.HB.Domain;
 using KR.Infrastructure;
 using KR.Infrastructure.Cache;
+using Polly;
 
 namespace KR.Document.HB.Api;
 
@@ -25,7 +26,15 @@ public static class ServiceExtensions
     }
 
     private static void RegisterExceptions(IServiceCollection services){ 
-        services.AddProblemDetails();      
+        services.AddProblemDetails(options => {
+          options.CustomizeProblemDetails = context =>
+            {
+                context.ProblemDetails.Extensions.Add("trace-id",
+                         context.HttpContext.TraceIdentifier);
+                context.ProblemDetails.Extensions.Add("path", 
+                        $"{context.HttpContext.Request.Path} : {context.HttpContext.Request.Method}");
+            };           
+        });      
         services.AddExceptionHandler<BadRequestExceptionHandler>();
         services.AddExceptionHandler<GlobalExceptionHandler>();
     }
