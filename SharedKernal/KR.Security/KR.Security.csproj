@@ -15,4 +15,8 @@
     <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\KR.Common\KR.Common.csproj" />
+  </ItemGroup>
+
 </Project>

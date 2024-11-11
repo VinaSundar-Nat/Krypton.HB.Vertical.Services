@@ -1,0 +1,45 @@
+{
+	"type": "record",
+	"name": "DocUpload",
+	"namespace": "Core.Document.Avro",
+	"version": "1",
+	"doc": "Document upload success event.",
+	"fields": [
+		{
+			"name": "doc_name",
+			"type": "string",
+			"doc": "Property describes the name of the document uploaded"
+		},
+		{
+			"name": "blob_path",
+			"type": "string",
+			"doc": "Property describes the uploaded path of the document (account : container)"
+		},
+		{
+			"name": "created_date",
+			"type": "string",
+			"doc": "Datetime when the document was uploaded"
+		},
+		{
+			"name": "meta_data",
+			"doc": "metadata of the document uploaded",
+            "default": null,
+			"type": {
+				"name": "MetaData",
+				"type": "record",
+				"fields": [
+					{
+						"name": "version",
+						"type": "string",
+						"doc": "version of the uploaded document"
+					},
+					{
+						"name": "user",
+						"type": "string",
+						"doc": "user uploading the document"
+					}
+				]
+			}
+		}
+	]
+}

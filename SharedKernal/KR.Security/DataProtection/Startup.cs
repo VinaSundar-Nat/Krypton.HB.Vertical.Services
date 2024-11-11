@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.InteropServices;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption;
 using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.ConfigurationModel;
@@ -9,9 +10,11 @@ using StackExchange.Redis;
 namespace KR.Security.DataProtection;
 
 public static class Startup
-{    
-    public static void DataProtectionFileStore(this IServiceCollection services,
-    string application,string path) => 
+{  
+    private static void Register(IServiceCollection services) =>
+        services.AddSingleton<IDataProtection, ProtectProvider>();
+
+    public static void DataProtectionFileStore(this IServiceCollection services,string application,string path) {
         services.AddDataProtection()
             .SetApplicationName(application)
             .PersistKeysToFileSystem(new DirectoryInfo(path))
@@ -21,8 +24,11 @@ public static class Startup
                 ValidationAlgorithm = ValidationAlgorithm.HMACSHA256
             });
 
+        Register(services);
+    }
+
     public static void DataProtectionCacheStore(this IServiceCollection services,
-    string application,ConnectionMultiplexer multiplexer) {
+    string application, ConnectionMultiplexer multiplexer) {
          var redis = ConnectionMultiplexer.Connect("localhost:6379");
          services.AddDataProtection()        
             .PersistKeysToStackExchangeRedis(multiplexer,$"STOREKEY-{application}")
@@ -32,9 +38,7 @@ public static class Startup
                 EncryptionAlgorithm = EncryptionAlgorithm.AES_256_CBC,
                 ValidationAlgorithm = ValidationAlgorithm.HMACSHA256
             });
+
     }
         
-
-
-
 }

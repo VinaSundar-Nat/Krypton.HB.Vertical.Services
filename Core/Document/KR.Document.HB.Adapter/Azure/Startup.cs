@@ -9,7 +9,6 @@ using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace KR.Document.HB.Adapter;
 
@@ -58,6 +57,5 @@ public static class Startup
     {
         services.AddSingleton<IBlobUploadService, BlobUploadService>();
         services.AddSingleton<IBlobDownloadService, BlobDownloadService>();
-
     }
 }

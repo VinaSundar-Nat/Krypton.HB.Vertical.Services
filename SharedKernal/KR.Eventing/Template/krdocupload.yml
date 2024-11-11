@@ -1,0 +1,33 @@
+asyncapi: 3.0.0
+info:
+  title: Document upload Api
+  version: 1.0.0
+  description: The API notifies you whenever a new document is uploaded for knowledge source.
+
+servers:
+  coreKafkaServer:
+    host: localhost:8092
+    description: Kafka broker in localhost
+    protocol: kafka
+
+operations:
+  onDocUpload:
+    action: send
+    channel:
+      $ref: '#/channels/docUploadTracker'
+
+channels:
+  docUploadTracker:
+    description: This channel contains a message for documents uploaded to blob storage.
+    address: doc_uploaded
+    messages:
+      documentDetails:
+        $ref: '#/components/messages/documentDetails'
+
+components:
+  messages:
+    documentDetails:
+      payload:
+        schemaFormat: 'application/vnd.apache.avro;version=1.9.0'
+        schema:
+          $ref: '../Schema/doc-upload.json'

@@ -1,8 +1,6 @@
 ﻿using Azure.Storage;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
-using Azure.Storage.Blobs.Specialized;
-using Azure.Storage.Sas;
 using KR.Common.Extensions;
 using KR.Document.HB.Domain;
 using KR.Infrastructure;
@@ -55,7 +53,5 @@ public class BlobUploadService(ILogger<BlobUploadService> Logger,
             FileName = fileModel.FileName,
             Url = BlobHelpers.ConstructBlobUrl(Configuration.BaseUrl!, Configuration.Container!, fileModel.FileName!),
         };
-    }
-
-    
+    }    
 }

@@ -6,20 +6,22 @@ using Microsoft.Extensions.Logging;
 
 namespace KR.Infrastructure;
 
-public class GlobalExceptionHandler: IExceptionHandler
+public class GlobalExceptionHandler : IExceptionHandler
 {
-      private readonly ILogger<GlobalExceptionHandler> _logger;
+    private readonly ILogger<GlobalExceptionHandler> _logger;
+    private readonly IProblemDetailsService _problemDetailsService;
 
-    public GlobalExceptionHandler(ILoggerFactory loggerFactory)
+    public GlobalExceptionHandler(ILoggerFactory loggerFactory, IProblemDetailsService problemDetailsService)
     {
         _logger = loggerFactory.CreateLogger<GlobalExceptionHandler>();
+        _problemDetailsService = problemDetailsService;
     }
 
 
     public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
     {
         _logger.LogServerException(httpContext.Request.Path, httpContext.Request.Method, exception);
-  
+
         var problemDetails = new ProblemDetails
         {
             Status = (int)HttpStatusCode.InternalServerError,
@@ -28,7 +30,12 @@ public class GlobalExceptionHandler: IExceptionHandler
             Instance = httpContext.Request.Path
         };
 
-        await httpContext.Response.WriteAsJsonAsync(problemDetails);
+        httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+        await _problemDetailsService.TryWriteAsync(new ProblemDetailsContext
+        {
+            ProblemDetails = problemDetails,
+            HttpContext = httpContext
+        });
 
         return true;
     }

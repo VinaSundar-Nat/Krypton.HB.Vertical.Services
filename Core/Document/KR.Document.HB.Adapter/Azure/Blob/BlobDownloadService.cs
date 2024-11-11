@@ -4,7 +4,6 @@ using Azure.Storage.Blobs.Specialized;
 using Azure.Storage.Sas;
 using KR.Document.HB.Domain;
 using KR.Infrastructure;
-using KR.Infrastructure.Cache.Interface;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -28,11 +27,10 @@ public sealed class BlobDownloadService(ILogger<BlobDownloadService> Logger,
             BlobName = blobClient.Name,
             Resource = Constants.BlobResource,
             StartsOn = DateTimeOffset.UtcNow,
-            ExpiresOn = DateTimeOffset.UtcNow.AddHours(Configuration.SasValidity!.Value)
+            ExpiresOn = DateTimeOffset.UtcNow.AddHours(Configuration.SasValidity!)
         };
 
         sasBuilder.SetPermissions(BlobSasPermissions.Read);
-        //var key = CacheWrapper.GenerateCacheKey(Constants.BlobCacheKey,blob);
 
         var userDelegationKey = await RequestUserDelegationKey(token);
 
