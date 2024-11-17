@@ -52,16 +52,16 @@ fi
 
 COMPOSE_FILES="-f ../docker-compose-utility.yml -f ../docker-compose-components.yml -f ../docker-compose-services.yml"
 
-if [ $includeComp == 'true' ] ; then
+if [ $includeComp == 'true' ]; then
     COMPOSE_FILES="$COMPOSE_FILES -f ../docker-compose-eventing.yml"
 fi
 
-if [ $printRenderedComposeFile == 'true' ]  ; then
+if [ $printRenderedComposeFile == 'true' ]; then
     echo 'print replaced compose file'
     docker-compose $COMPOSE_FILES --env-file ./runtime.release.env config
 fi
 
-if [ $build == 'true' ]  ; then
+if [ $build == 'true' ]; then
     echo "Build compose version $krversion"   
     docker-compose $COMPOSE_FILES --env-file ./runtime.release.env build
 

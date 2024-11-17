@@ -14,6 +14,6 @@
     <PackageReference Include="Apache.Avro" />
   </ItemGroup>
   <Target Name="RunCustomExe" BeforeTargets="Build"> 
-    <Exec Command="&quot;$(ProjectDir)../../.utilities/exec/avrogen&quot; -s &quot;$(ProjectDir)/Schema/doc-upload.asvc&quot; &quot;$(ProjectDir)/Events&quot;" />
+    <Exec Command="bash &quot;$(ProjectDir)../../.utilities/scripts/avro-model-convert.sh&quot; &quot;$(ProjectDir)/Schema&quot; &quot;$(ProjectDir)/Events&quot; $(Configuration)" />
   </Target>
 </Project>
